@@ -1,30 +1,46 @@
 <script lang="ts">
-	export let name: string;
+
+let todo = "";
+
+let input!: HTMLInputElement;
+
+let todos = [] as {
+        todo: string;
+        completed: boolean;
+}[];
+
+function addTodo(todo: string) {
+        todos = [{ todo, completed: false }, ...todos];
+ 
+        todo = "";
+
+        input.value = "";
+}
+
+function removeTodo(index: number) {
+        todos = todos.filter((_, i) => i !== index);
+}
+
 </script>
 
+<svelte:window on:keypress={(e) => e.key === "Enter" && todo ? addTodo(todo) : void 0} />
+
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+
+        <h1>a cool todolist app in svelte</h1>
+
+        <input bind:this={input} bind:value={todo} type="text" />
+
+        {#if todo}
+                <input on:click={() => addTodo(todo)} type="submit" value="add" />
+        {/if}
+
+        <ul>
+                {#each todos as todo, index}
+                        <li>
+                                <span>{todo.todo}</span>
+                                <button on:click={() => removeTodo(index)}>🗑</button>
+                        </li>   
+                {/each}
+        </ul>
 </main>
-
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
-</style>
